@@ -149,6 +149,33 @@ app.get("/setup", async (req, res) => {
     }
 });
 
+// Endpoint para probar SMTP
+app.get("/test-email", async (req, res) => {
+    const nodemailer = require("nodemailer");
+    const SMTP_HOST = process.env.SMTP_HOST || "smtp-relay.brevo.com";
+    const SMTP_PORT = parseInt(process.env.SMTP_PORT) || 587;
+    const SMTP_USER = process.env.SMTP_USER || "aa05e4001@smtp-brevo.com";
+    const SMTP_PASS = process.env.SMTP_PASS;
+    
+    res.json({ 
+        SMTP_HOST, 
+        SMTP_PORT, 
+        SMTP_USER, 
+        SMTP_PASS_SET: !!SMTP_PASS 
+    });
+});
+
+// Debug: ver errores de request-reset
+app.get("/debug-reset", async (req, res) => {
+    try {
+        const pool = require("./db");
+        const result = await pool.query("SELECT column_name FROM information_schema.columns WHERE table_name = 'users'");
+        res.json({ columns: result.rows.map(r => r.column_name) });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
 // Endpoint para hacer admin
 app.get("/make-admin", async (req, res) => {
     try {
