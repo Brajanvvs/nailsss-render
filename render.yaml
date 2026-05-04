@@ -12,3 +12,17 @@ services:
         value: production
       - key: PORT
         value: 8080
+      - key: DATABASE_URL
+        sync: false
+      - key: MONGO_URI
+        sync: false
+      - key: SMTP_HOST
+        value: smtp-relay.brevo.com
+      - key: SMTP_PORT
+        value: 587
+      - key: SMTP_USER
+        value: aa05e4001@smtp-brevo.com
+      - key: SMTP_PASS
+        sync: false
+      - key: FRONTEND_URL
+        sync: false
