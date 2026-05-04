@@ -21,7 +21,8 @@ async function sendEmail(to, subject, html) {
         host: SMTP_HOST,
         port: 465,
         secure: true,
-        connectionTimeout: 10000,
+        socketTimeout: 30000,
+        connectionTimeout: 30000,
         auth: { user: SMTP_USER, pass: SMTP_PASS }
     });
 
