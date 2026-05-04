@@ -23,25 +23,28 @@ const balanceRoutes = require("./routes/balance");
 const app = express();
 
 /* =========================
-   CONFIG
+    CONFIG
 ========================= */
 app.set("trust proxy", 1);
 
+const frontendPath = path.join(__dirname, "frontend");
+
 /* =========================
-   LOG INICIAL
+    LOG INICIAL
 ========================= */
 console.log("🚀 Iniciando servidor...");
 console.log("🌍 NODE_ENV:", process.env.NODE_ENV);
 console.log("🔌 PORT ENV:", process.env.PORT);
+console.log("📂 Frontend path:", frontendPath);
 
 /* =========================
-   MIDDLEWARE
+    MIDDLEWARE
 ========================= */
 app.use(cors());
 app.use(express.json());
 
 /* =========================
-   🔥 HEALTH CHECK (CRÍTICO)
+    🔥 HEALTH CHECK (CRÍTICO)
 ========================= */
 app.get("/", (req, res) => {
   res.sendFile(path.join(frontendPath, "index.html"));
@@ -66,12 +69,8 @@ app.use("/balance", balanceRoutes);
 app.use("/api/pqrs", pqrsRoutes);
 
 /* =========================
-   FRONTEND
+    FRONTEND
 ========================= */
-const frontendPath = path.join(__dirname, "frontend");
-
-console.log("📂 Frontend path:", frontendPath);
-
 app.use(express.static(frontendPath));
 
 app.get("/home", (req, res) => {

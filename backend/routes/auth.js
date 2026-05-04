@@ -226,7 +226,8 @@ router.post("/request-reset", async (req, res) => {
             [resetToken, resetExpires, email]
         );
 
-        const resetUrl = `https://nailsss-production.up.railway.app/reset-password.html?token=${resetToken}&email=${email}`;
+        const FRONTEND_URL = process.env.FRONTEND_URL || "https://nailsss-render.onrender.com";
+        const resetUrl = `${FRONTEND_URL}/reset-password.html?token=${resetToken}&email=${email}`;
 
         if (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS) {
             try {

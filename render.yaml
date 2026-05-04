@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: nailsss-backend
+    repo: https://github.com/Brajanvvs/nailsss-render.git
+    region: Oregon
+    branch: main
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: node server.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 8080
