@@ -22,6 +22,7 @@ async function sendEmail(to, subject, html) {
         port: 587,
         secure: false,
         requireTLS: true,
+        family: 4,
         auth: { user: SMTP_USER, pass: SMTP_PASS }
     });
 
