@@ -208,6 +208,7 @@ SOLICITAR RESET DE CONTRASEÑA
 router.post("/request-reset", async (req, res) => {
     try {
         const { email } = req.body;
+        console.log("📧 Request reset para:", email);
 
         const user = await pool.query(
             "SELECT * FROM users WHERE email=$1",
@@ -225,9 +226,16 @@ router.post("/request-reset", async (req, res) => {
             "UPDATE users SET reset_token=$1, reset_expires=$2 WHERE email=$3",
             [resetToken, resetExpires, email]
         );
+        console.log("✅ Token actualizado");
 
         const FRONTEND_URL = process.env.FRONTEND_URL || "https://nailsss-render.onrender.com";
         const resetUrl = `${FRONTEND_URL}/reset-password.html?token=${resetToken}&email=${email}`;
+
+        console.log("📧 SMTP_CHECK:", {
+            SMTP_HOST: process.env.SMTP_HOST,
+            SMTP_USER: process.env.SMTP_USER,
+            SMTP_PASS_SET: !!process.env.SMTP_PASS
+        });
 
         if (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS) {
             try {
