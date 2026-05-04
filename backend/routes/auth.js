@@ -6,9 +6,9 @@ const crypto = require("crypto");
 const nodemailer = require("nodemailer");
 
 async function sendEmail(to, subject, html) {
-    const SMTP_HOST = process.env.SMTP_HOST || "smtp-relay.brevo.com";
+    const SMTP_HOST = process.env.SMTP_HOST || "smtp.gmail.com";
     const SMTP_PORT = 465; // Forzar puerto 465 (SSL)
-    const SMTP_USER = process.env.SMTP_USER || "aa05e4001@smtp-brevo.com";
+    const SMTP_USER = process.env.SMTP_USER || "tu_email@gmail.com";
     const SMTP_PASS = process.env.SMTP_PASS;
 
     console.log("📧 Config SMTP:", { host: SMTP_HOST, port: SMTP_PORT, user: SMTP_USER });
@@ -18,11 +18,7 @@ async function sendEmail(to, subject, html) {
     }
 
     const transporter = nodemailer.createTransport({
-        host: SMTP_HOST,
-        port: 465,
-        secure: true,
-        socketTimeout: 30000,
-        connectionTimeout: 30000,
+        service: "gmail",
         auth: { user: SMTP_USER, pass: SMTP_PASS }
     });
 
