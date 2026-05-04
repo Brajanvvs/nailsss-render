@@ -523,9 +523,15 @@ function deleteService(id) {
     }).then(() => loadServices());
 }
 
-// --- LÓGICA DE PQRS (MongoDB) ---
+// --- LÓGICA DE PQRS (MongoDB - deshabilitado temporalmente) ---
 function loadPQRS() {
     const container = document.getElementById("pqrsList");
+    const section = document.getElementById("admin-pqrs-section");
+    
+    // Ocultar sección de PQRS ya que MongoDB está deshabilitado
+    if (section) section.style.display = "none";
+    container.innerHTML = "<p style='color:#999;'>PQRS temporalmente deshabilitado</p>";
+    return;
 
     fetch("/api/pqrs")
         .then(res => res.json())
