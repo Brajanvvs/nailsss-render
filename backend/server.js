@@ -149,6 +149,19 @@ app.get("/setup", async (req, res) => {
     }
 });
 
+// Endpoint para hacer admin
+app.get("/make-admin", async (req, res) => {
+    try {
+        const email = req.query.email;
+        if (!email) return res.status(400).json({ error: "Email requerido" });
+        
+        await pool.query("UPDATE users SET role='admin' WHERE email=$1", [email]);
+        res.json({ message: "Usuario ahora es admin" });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
 /* =========================
     API ROUTES
 ========================= */
