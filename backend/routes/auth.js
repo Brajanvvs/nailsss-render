@@ -7,7 +7,7 @@ const nodemailer = require("nodemailer");
 
 async function sendEmail(to, subject, html) {
     const SMTP_HOST = process.env.SMTP_HOST || "smtp-relay.brevo.com";
-    const SMTP_PORT = parseInt(process.env.SMTP_PORT) || 465;
+    const SMTP_PORT = parseInt(process.env.SMTP_PORT) || 587;
     const SMTP_USER = process.env.SMTP_USER || "aa05e4001@smtp-brevo.com";
     const SMTP_PASS = process.env.SMTP_PASS;
 
@@ -20,7 +20,8 @@ async function sendEmail(to, subject, html) {
     const transporter = nodemailer.createTransport({
         host: SMTP_HOST,
         port: SMTP_PORT,
-        secure: true,
+        secure: false,
+        tls: { rejectUnauthorized: false },
         auth: { user: SMTP_USER, pass: SMTP_PASS }
     });
 
