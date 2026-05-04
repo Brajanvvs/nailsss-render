@@ -7,11 +7,10 @@ const nodemailer = require("nodemailer");
 
 async function sendEmail(to, subject, html) {
     const SMTP_HOST = process.env.SMTP_HOST || "smtp.gmail.com";
-    const SMTP_PORT = 465; // Forzar puerto 465 (SSL)
-    const SMTP_USER = process.env.SMTP_USER || "tu_email@gmail.com";
+    const SMTP_USER = process.env.SMTP_USER || "reflexionesprofundascom@gmail.com";
     const SMTP_PASS = process.env.SMTP_PASS;
 
-    console.log("📧 Config SMTP:", { host: SMTP_HOST, port: SMTP_PORT, user: SMTP_USER });
+    console.log("📧 Enviando email SMTP a:", SMTP_USER);
 
     if (!SMTP_PASS) {
         throw new Error("SMTP_PASS no configurada");
@@ -22,7 +21,6 @@ async function sendEmail(to, subject, html) {
         port: 587,
         secure: false,
         requireTLS: true,
-        family: 4,
         auth: { user: SMTP_USER, pass: SMTP_PASS }
     });
 
