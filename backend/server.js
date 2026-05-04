@@ -7,9 +7,9 @@ const express = require("express");
 const cors = require("cors");
 const path = require("path");
 
-// 🔥 Mongo + PQRS
-const connectMongo = require("./mongo");
-const pqrsRoutes = require("./routes/pqrs");
+// 🔥 Mongo + PQRS (deshabilitado temporalmente)
+// const connectMongo = require("./mongo");
+// const pqrsRoutes = require("./routes/pqrs");
 
 // 🔹 Rutas existentes
 const servicesRoutes = require("./routes/services");
@@ -66,7 +66,7 @@ app.use("/sales", salesRoutes);
 app.use("/balance", balanceRoutes);
 
 // 🔥 PQRS (Mongo)
-app.use("/api/pqrs", pqrsRoutes);
+// app.use("/api/pqrs", pqrsRoutes); // PQRS deshabilitado
 
 /* =========================
     FRONTEND
@@ -104,5 +104,5 @@ app.listen(PORT, () => {
   console.log(`🔥 Servidor corriendo en puerto ${PORT}`);
 
   // 🔥 MUY IMPORTANTE: conectar Mongo DESPUÉS
-  connectMongo();
+  // connectMongo(); // MongoDB deshabilitado temporalmente
 });
