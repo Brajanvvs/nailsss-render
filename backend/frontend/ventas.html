@@ -350,6 +350,15 @@ function completeSale() {
 function printInvoice() {
     if (!lastSale) return;
     
+    let items = lastSale.items;
+    if (typeof items === "string") {
+        items = JSON.parse(items);
+    }
+    if (!items || items.length === 0) {
+        alert("No hay items en esta venta");
+        return;
+    }
+    
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
     
@@ -382,7 +391,6 @@ function printInvoice() {
     
     y += 10;
     doc.setTextColor(0);
-    const items = JSON.parse(lastSale.items || "[]");
     items.forEach(item => {
         doc.text(item.product_name.substring(0, 25), 22, y);
         doc.text(item.quantity.toString(), 110, y);
