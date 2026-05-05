@@ -117,6 +117,7 @@ function loadSales() {
                             <th style="padding:10px; text-align:left;">Documento</th>
                             <th style="padding:10px; text-align:left;">Total</th>
                             <th style="padding:10px; text-align:left;">Items</th>
+                            <th style="padding:10px; text-align:left;">Acción</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -132,6 +133,9 @@ function loadSales() {
                                         ${s.items ? s.items.length : 0} productos
                                     </span>
                                 </td>
+                                <td style="padding:10px;">
+                                    <button onclick="printInvoice(${s.id})" style="background:#27ae60; color:white; border:none; padding:5px 10px; border-radius:5px; cursor:pointer;">📄 Factura</button>
+                                </td>
                             </tr>
                         `).join('')}
                     </tbody>
@@ -142,6 +146,82 @@ function loadSales() {
             console.error(err);
             document.getElementById("salesList").innerHTML = "<p style='color:red'>Error cargando ventas</p>";
         });
+}
+
+async function printInvoice(saleId) {
+    try {
+        const res = await fetch(`/sales/${saleId}`);
+        const sale = await res.json();
+        
+        if (!res.ok || sale.error) {
+            alert("Error cargando la venta");
+            return;
+        }
+
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+
+        doc.setFontSize(22);
+        doc.setTextColor(214, 51, 132);
+        doc.text("NAIL SALON", 105, 20, { align: "center" });
+
+        doc.setFontSize(12);
+        doc.setTextColor(100);
+        doc.text("Factura de Venta", 105, 28, { align: "center" });
+
+        doc.setDrawColor(214, 51, 132);
+        doc.line(20, 32, 190, 32);
+
+        doc.setFontSize(10);
+        doc.setTextColor(0);
+        doc.text(`Factura #${sale.id}`, 20, 42);
+        doc.text(`Fecha: ${new Date(sale.created_at).toLocaleDateString("es-CO")}`, 140, 42);
+        doc.text(`Cliente: ${sale.client_name || "Sin cliente"}`, 20, 50);
+        doc.text(`Documento: ${sale.client_document || "-"}`, 20, 58);
+        doc.text(`Teléfono: ${sale.client_phone || "-"}`, 140, 50);
+
+        doc.line(20, 63, 190, 63);
+
+        const items = sale.items || [];
+        const tableData = items.map(item => [
+            item.product_name || "Producto",
+            item.quantity.toString(),
+            `$${parseFloat(item.unit_price || 0).toLocaleString()}`,
+            `$${parseFloat(item.subtotal || 0).toLocaleString()}`
+        ]);
+
+        doc.autoTable({
+            startY: 68,
+            head: [["Producto", "Cant.", "Precio Unit.", "Subtotal"]],
+            body: tableData,
+            headStyles: { fillColor: [214, 51, 132] },
+            styles: { fontSize: 10 },
+            columnStyles: {
+                0: { cellWidth: 70 },
+                1: { cellWidth: 25, halign: "center" },
+                2: { cellWidth: 35, halign: "right" },
+                3: { cellWidth: 40, halign: "right" }
+            }
+        });
+
+        const finalY = doc.lastAutoTable.finalY + 10;
+        doc.setFontSize(14);
+        doc.setFont(undefined, "bold");
+        doc.text(`Total: $${parseFloat(sale.total || 0).toLocaleString()}`, 190, finalY, { align: "right" });
+
+        doc.setDrawColor(214, 51, 132);
+        doc.line(20, finalY + 5, 190, finalY + 5);
+
+        doc.setFontSize(8);
+        doc.setFont(undefined, "normal");
+        doc.setTextColor(150);
+        doc.text("Gracias por su compra - Nail Salon", 105, finalY + 15, { align: "center" });
+
+        doc.save(`Factura_${sale.id}_${sale.client_name || "cliente"}.pdf`);
+    } catch (err) {
+        console.error(err);
+        alert("Error generando la factura");
+    }
 }
 
 async function generateSalesPDF() {
