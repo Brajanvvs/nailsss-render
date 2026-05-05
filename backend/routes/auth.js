@@ -6,11 +6,34 @@ const crypto = require("crypto");
 const nodemailer = require("nodemailer");
 
 async function sendEmail(to, subject, html) {
-    const SMTP_HOST = process.env.SMTP_HOST || "smtp.gmail.com";
-    const SMTP_USER = process.env.SMTP_USER || "reflexionesprofundascom@gmail.com";
+    const RESEND_API_KEY = process.env.RESEND_API_KEY;
+    
+    if (RESEND_API_KEY) {
+        console.log("📧 Enviando con Resend...");
+        const res = await fetch("https://api.resend.com/emails", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${RESEND_API_KEY}`
+            },
+            body: JSON.stringify({
+                from: "Nail Salon <onboarding@resend.dev>",
+                to: [to],
+                subject: subject,
+                html: html
+            })
+        });
+        
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.message || "Error Resend");
+        console.log("✅ Email enviado con Resend:", data.id);
+        return { id: data.id };
+    }
+    
+    // Fallback a nodemailer
+    console.log("📧 Fallback a nodemailer...");
+    const SMTP_USER = process.env.SMTP_USER;
     const SMTP_PASS = process.env.SMTP_PASS;
-
-    console.log("📧 Enviando email SMTP a:", SMTP_USER);
 
     if (!SMTP_PASS) {
         throw new Error("SMTP_PASS no configurada");
